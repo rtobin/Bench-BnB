@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BenchBnB</title>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+
+  <% api_key = "AIzaSyDiVPtUbN3dHoWExJWEN8KZBjCkaHkLPSI" %>
+  <% map_url = "https://maps.googleapis.com/maps/api/js?key=#{api_key}" %>
+  <% # add "&callback=initMap" if I want some intialization, but no need... %>
+  <script
+    src="<%= map_url %>">
+  </script>
+  <%= yield %>
+</body>
+</html>
