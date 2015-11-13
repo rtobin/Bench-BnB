@@ -25,6 +25,7 @@ window.Map = React.createClass({
   },
 
   setBenchMarkers: function () {
+    labelIndex = 0;
     var newMarkers = BenchStore.all().map(this.addBenchMarker)
     if (this._markers) {
       this.removeBenchMarkersNotStored();
@@ -83,23 +84,28 @@ window.Map = React.createClass({
 
   },
 
-  addBenchMarker: function (benchPlace) {
+  addBenchMarker: function (benchPlace, idx) {
     var marker, pos;
     marker = this.benchHasMarker(benchPlace.id);
     if (marker == undefined) {
-      console.log("added marker for " + benchPlace.id)
-      pos = {lat: benchPlace.lat, lng: benchPlace.lng};
-      marker = new google.maps.Marker({
-        position: pos,
-        map: this.map,
-        label: labels[labelIndex++ % labels.length],
-        title: benchPlace.name,
-        animation: google.maps.Animation.DROP
-      });
+      setTimeout( function () {
+          pos = {lat: benchPlace.lat, lng: benchPlace.lng};
+          marker = new google.maps.Marker({
+            position: pos,
+            map: this.map,
+            label: labels[labelIndex++ % labels.length],
+            title: benchPlace.name,
+            animation: google.maps.Animation.DROP
+          });
 
-      marker.addListener('click', this.toggleBounce);
-      this.attachSecretMessage(marker, benchPlace.description);
-      marker["benchId"] = benchPlace.id;
+          marker.addListener('click', this.toggleBounce);
+          this.attachSecretMessage(marker, benchPlace.description);
+          marker["benchId"] = benchPlace.id;
+        }.bind(this),
+
+        idx * 200
+      )
+
     }
 
     return marker;

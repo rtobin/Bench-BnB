@@ -1,6 +1,6 @@
 window.Index = React.createClass({
-  getInitialstate: function () {
-    return { benches: Benchstore.all() }
+  getInitialState: function () {
+    return { benches: BenchStore.all() }
   },
 
   _onChange: function () {
@@ -17,10 +17,24 @@ window.Index = React.createClass({
   },
 
 
+  getBenchList: function () {
+
+    return this.state.benches.map( function (bench) {
+      return <li>{bench.description}</li>
+    })
+  },
+
   render: function () {
     return(
       <div>
         <div className="benches-index">
+          <ul classname="list">
+            {
+              this.state.benches.map( function (bench) {
+                return <li>{bench.description}</li>
+              })
+            }
+          </ul>
         </div>
       </div>
     );
