@@ -1,3 +1,4 @@
 window.BenchConstants = {
   BENCHES_RECEIVED: "BENCHES_RECEIVED",
+  BENCH_IN_FOCUS: "BENCH_IN_FOCUS"
 }

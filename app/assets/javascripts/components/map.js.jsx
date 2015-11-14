@@ -58,6 +58,7 @@ window.Map = React.createClass({
   },
 
   benchHasMarker: function (id) {
+    debugger
     for (var i = 0; i < this._markers.length; i++) {
       if (this._markers[i].benchId === id) {
         return this._markers[i];
@@ -89,6 +90,7 @@ window.Map = React.createClass({
     marker = this.benchHasMarker(benchPlace.id);
     if (marker == undefined) {
       setTimeout( function () {
+        debugger
           pos = {lat: benchPlace.lat, lng: benchPlace.lng};
           marker = new google.maps.Marker({
             position: pos,

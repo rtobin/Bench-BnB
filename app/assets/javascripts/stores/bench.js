@@ -1,5 +1,6 @@
 (function(root){
   var CHANGE_EVENT = "change";
+  var CHANGE_MARKER_FOCUS = "marker_focus"
   var _benches = [];
   var _markers = [];
 
@@ -26,10 +27,27 @@
       this.removeListener(CHANGE_EVENT, callback);
     },
 
+    addMarkerFocusListener :function (callback) {
+      this.on(CHANGE_MARKER_FOCUS, callback);
+    },
+
+    removeMarkerFocuListener: function (callback) {
+      this.removeListener(CHANGE_MARKER_FOCUS, callback);
+    },
+
     dispatcherID: AppDispatcher.register(function (payload) {
+      switch(payload.actionType) {
+        case BenchConstants.BENCHES_RECEIVED):
+          resetBenches(payload.benches);
+          BenchStore.emit(CHANGE_EVENT);
+          break;
+        case BenchConstants.BENCH_IN_FOCUS:
+          BenchStore.emit(CHANGE_MARKER_FOCUS);
+
+
+      }
       if (payload.actionType === BenchConstants.BENCHES_RECEIVED) {
-        resetBenches(payload.benches);
-        BenchStore.emit(CHANGE_EVENT);
+
       }
     })
 

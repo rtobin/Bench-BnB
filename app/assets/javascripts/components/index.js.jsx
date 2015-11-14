@@ -16,6 +16,7 @@ window.Index = React.createClass({
     BenchStore.removeChangeListener(this._onChange);
   },
 
+  
 
   getBenchList: function () {
 
@@ -26,16 +27,14 @@ window.Index = React.createClass({
 
   render: function () {
     return(
-      <div>
-        <div className="benches-index">
-          <ul classname="list">
-            {
-              this.state.benches.map( function (bench) {
-                return <li>{bench.description}</li>
-              })
-            }
-          </ul>
-        </div>
+      <div className="benches-index">
+        <ul className="list">
+          {
+            this.state.benches.map( function (bench) {
+              return <li key={bench.id}>{bench.description}</li>
+            })
+          }
+        </ul>
       </div>
     );
   }
