@@ -1,15 +1,29 @@
 ApiActions = {
-  receiveAll: function (benches) {
+  receiveAllBenches: function (benches) {
     AppDispatcher.dispatch({
       actionType: BenchConstants.BENCHES_RECEIVED,
       benches: benches
     });
   },
 
-  markerFocus: function (bench) {
+  receiveSingleBench: function(bench) {
     AppDispatcher.dispatch({
-      actionType: BenchConstants.BENCH_IN_FOCUS,
+      actionType: BenchConstants.BENCH_RECEIVED,
       bench: bench
+    });
+  },
+
+  hoverOn: function(idx) {
+    AppDispatcher.dispatch({
+      actionType: BenchConstants.BENCH_HOVERED_ON,
+      idx: idx
+    });
+  },
+
+  hoverOff: function(idx) {
+    AppDispatcher.dispatch({
+      actionType: BenchConstants.BENCH_HOVERED_OFF,
+      idx: idx
     });
   }
 }

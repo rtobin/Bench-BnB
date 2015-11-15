@@ -3,10 +3,6 @@ window.Index = React.createClass({
     return { benches: BenchStore.all() }
   },
 
-  _onChange: function () {
-    this.setState({ benches: BenchStore.all() });
-  },
-
   componentDidMount: function () {
     BenchStore.addChangeListener(this._onChange);
 
@@ -16,26 +12,26 @@ window.Index = React.createClass({
     BenchStore.removeChangeListener(this._onChange);
   },
 
-  
-
-  getBenchList: function () {
-
-    return this.state.benches.map( function (bench) {
-      return <li>{bench.description}</li>
-    })
-  },
-
   render: function () {
     return(
-      <div className="benches-index">
-        <ul className="list">
-          {
-            this.state.benches.map( function (bench) {
-              return <li key={bench.id}>{bench.description}</li>
-            })
-          }
-        </ul>
-      </div>
+      <ul className="benches-index">
+        {
+          this.state.benches.map( function (bench, idx) {
+            return (
+              <li key={bench.id}
+                onMouseEnter={ApiActions.hoverOn.bind(null, idx)}
+                onMouseLeave={ApiActions.hoverOff.bind(null, idx)}
+                >
+                <div>{bench.description}</div>
+              </li>
+            )
+          })
+        }
+      </ul>
     );
+  },
+
+  _onChange: function () {
+    this.setState({benches: BenchStore.all()});
   }
 });

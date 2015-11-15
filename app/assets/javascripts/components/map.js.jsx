@@ -3,11 +3,6 @@ var labelIndex = 0;
 
 
 window.Map = React.createClass({
-  getInitialstate: function () {
-    return {
-      _markers: [],
-    }
-  },
 
   componentDidMount: function(){
     var map = React.findDOMNode(this.refs.map);
@@ -16,113 +11,110 @@ window.Map = React.createClass({
       zoom: 13
     };
 
-    // this.setState({map: new google.maps.Map(map, mapOptions)});
     this.map = new google.maps.Map(map, mapOptions);
-    this.listenForIdle();
-    this.setBenchMarkers();
-    BenchStore.addChangeListener(this.setBenchMarkers);
-    // this.props.benches.forEach(this.addBench);
+    this._markers = [];
+    this._bouncingMarker = null;
+    this.map.addListener("idle", this._fetchBenchesInBound);
+
+    BenchStore.addChangeListener(this._setBenchMarkers);
+    BenchHoverStore.addHoverChangeListener(this._onBenchHoverChange);
   },
 
-  setBenchMarkers: function () {
-    labelIndex = 0;
-    var newMarkers = BenchStore.all().map(this.addBenchMarker)
-    if (this._markers) {
-      this.removeBenchMarkersNotStored();
-      this._markers = this._markers.concat(newMarkers);
-    } else {
-      this._markers = newMarkers;
-    }
-    // this.setState({_markers: this.state._markers.concat(newMarkers)});
 
-    console.log(newMarkers);
-
-
-    // BenchStore.all().forEach(function(bench){console.log(bench.description)});
+  componentWillUnmount: function () {
+    BenchStore.removeChangeListener(this._onChange);
+    BenchHoverStore.removeHoverChangeListener(this._onBenchHoverChange.bind(this));
   },
 
-  removeBenchMarkersNotStored: function () {
-    var benchIds = BenchStore.getAllBenchIds();
-    var that = this;
-    this._markers.forEach( function (marker) {
-      if (benchIds.indexOf(marker.benchId) === -1) {
-        that.removeMarkerFromMap(marker);
-      }
+  render: function () {
+   return (
+     <div className="map" ref="map" />
+   );
+  },
+
+  _fetchBenchesInBound: function () {
+    var bounds = this.map.getBounds();
+    neBounds = bounds.getNorthEast();
+    swBounds = bounds.getSouthWest();
+
+    ApiUtil.fetchBenches({
+      northEast: {lat: neBounds.lat(), lng: neBounds.lng()},
+      southWest: {lat: swBounds.lat(), lng: swBounds.lng()}
     })
   },
 
-  removeMarkerFromMap: function (marker) {
-    marker.setMap(null);
-    var idx = this._markers.indexOf(marker);
-    this._markers.splice(idx, 1);
+  _setBenchMarkers: function () {
+    labelIndex = 0;
+    var newMarkerSet = BenchStore.all().map(this._addBenchMarker);
+    this._resetMarkers(newMarkerSet);
   },
 
-  benchHasMarker: function (id) {
-    debugger
+  _resetMarkers: function (newMarkers) {
+    this._markers.forEach( function (marker) {
+      if (newMarkers.indexOf(marker) === -1) {
+        marker.setMap(null);
+      }
+    })
+
+    this._markers = newMarkers;
+  },
+
+  _addBenchMarker: function (benchPlace, markerIdx) {
+    var marker, pos;
+    marker = this._getBenchMarker(benchPlace.id);
+
+    if (marker == null) {
+      pos = {lat: benchPlace.lat, lng: benchPlace.lng};
+      marker = new google.maps.Marker({
+        position: pos,
+        map: this.map,
+        title: benchPlace.name,
+        animation: google.maps.Animation.DROP,
+        label: labels[markerIdx % labels.length]
+      });
+
+      this._attachSecretMessage(marker, benchPlace.description);
+      marker["benchId"] = benchPlace.id;
+    }
+
+    return marker;
+  },
+
+  _getBenchMarker: function (id) {
     for (var i = 0; i < this._markers.length; i++) {
       if (this._markers[i].benchId === id) {
         return this._markers[i];
       }
     }
 
-    return undefined;
+    return null;
   },
 
-  listenForIdle: function () {
-    //we listen for the map to emit an 'idle' event, it does this when
-    //the map stops moving
-    var that = this;
-    google.maps.event.addListener(this.map, 'idle', function() {
-      var bounds = this.getBounds();
-      neBounds = bounds.getNorthEast();
-      swBounds = bounds.getSouthWest();
-      bounds = {
-        northEast: {lat: neBounds.lat(), lng: neBounds.lng()},
-        southWest: {lat: swBounds.lat(), lng: swBounds.lng()}
-      }
-       ApiUtil.fetchBenches(bounds)
-    });
+  _onBenchHoverChange: function () {
+    var markerIdx = BenchHoverStore.benchIndex();
 
-  },
-
-  addBenchMarker: function (benchPlace, idx) {
-    var marker, pos;
-    marker = this.benchHasMarker(benchPlace.id);
-    if (marker == undefined) {
-      setTimeout( function () {
-        debugger
-          pos = {lat: benchPlace.lat, lng: benchPlace.lng};
-          marker = new google.maps.Marker({
-            position: pos,
-            map: this.map,
-            label: labels[labelIndex++ % labels.length],
-            title: benchPlace.name,
-            animation: google.maps.Animation.DROP
-          });
-
-          marker.addListener('click', this.toggleBounce);
-          this.attachSecretMessage(marker, benchPlace.description);
-          marker["benchId"] = benchPlace.id;
-        }.bind(this),
-
-        idx * 200
-      )
-
+    if (this._bouncingMarker) {
+      this._toggleBouncing(this._bouncingMarker);
     }
 
-    return marker;
+    if (markerIdx !== -1) {
+      this._bouncingMarker = this._markers[markerIdx];
+      this._toggleBouncing(this._bouncingMarker);
+
+    } else {
+      this._bouncingMarker = null;
+    }
   },
 
-  toggleBounce: function (marker) {
-    // if (marker.getAnimation() !== null) {
-    //   marker.setAnimation(null);
-    // } else {
-    console.log(marker);
+  _toggleBouncing: function (marker) {
+    if (marker.getAnimation() !== null) {
+      marker.setAnimation(null);
+    } else {
       marker.setAnimation(google.maps.Animation.BOUNCE);
-    // }
+    }
   },
 
-  attachSecretMessage: function (marker, secretMessage) {
+  _attachSecretMessage: function (marker, secretMessage) {
     var infowindow = new google.maps.InfoWindow({
       content: "Here is " + secretMessage + "!"
     });
@@ -130,15 +122,5 @@ window.Map = React.createClass({
     marker.addListener('click', function() {
       infowindow.open(marker.get('map'), marker);
     });
-  },
-
-
-  render: function () {
-    return (
-      <div className="map" ref="map">
-
-      </div>
-    );
   }
-
 })

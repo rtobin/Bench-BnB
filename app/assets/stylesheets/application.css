@@ -19,3 +19,17 @@
   width: 500px;
   height: 500px;
 }
+
+ul {
+  list-style: none;
+  float: left;
+  width: 300px;
+}
+
+li {
+  border: solid 1px black;
+}
+
+li:hover {
+  background: lightgreen;
+}

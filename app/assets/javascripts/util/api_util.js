@@ -6,7 +6,7 @@ window.ApiUtil = {
      dataType: "json",
      data: {bounds: bounds},
      success: function (benches){
-       ApiActions.receiveAll(benches);
+       ApiActions.receiveAllBenches(benches);
      }
    })
   }
