@@ -15,7 +15,7 @@
       return _benchIndex;
     },
 
-    addHoverChangeListener :function (callback) {
+    addHoverChangeListener: function (callback) {
       this.on(BENCH_HOVER_CHANGE_EVENT, callback);
     },
 

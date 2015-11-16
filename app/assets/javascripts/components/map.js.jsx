@@ -33,7 +33,6 @@ window.Map = React.createClass({
 
   render: function () {
     var center;
-    debugger
     if (this.props.location
       && this.props.location.query.lat
       && this.props.location.query.lng) {
@@ -58,11 +57,13 @@ window.Map = React.createClass({
     var bounds = this.map.getBounds();
     neBounds = bounds.getNorthEast();
     swBounds = bounds.getSouthWest();
-
-    ApiUtil.fetchBenches({
-      northEast: {lat: neBounds.lat(), lng: neBounds.lng()},
-      southWest: {lat: swBounds.lat(), lng: swBounds.lng()}
-    })
+    params = { bounds : {
+        northEast: {lat: neBounds.lat(), lng: neBounds.lng()},
+        southWest: {lat: swBounds.lat(), lng: swBounds.lng()}
+      }
+    };
+    FilterActions.receiveFilterParams(params);
+    ApiUtil.fetchBenches(params);
   },
 
   _setBenchMarkers: function () {

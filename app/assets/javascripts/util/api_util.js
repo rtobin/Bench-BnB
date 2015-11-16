@@ -1,10 +1,15 @@
 window.ApiUtil = {
-  fetchBenches: function (bounds) {
+  fetchBenches: function (params) {
+    debugger
     //make an api call using AJAX in here
     $.ajax({
       url: "api/benches",
       dataType: "json",
-      data: {bounds: bounds},
+      data: {
+        bounds: params.bounds,
+        minSeating: params.minSeating,
+        maxSeating: params.maxSeating
+      },
       success: function (benches){
         ApiActions.receiveAllBenches(benches);
       }
@@ -22,4 +27,5 @@ window.ApiUtil = {
       }
     })
   }
+
 }
