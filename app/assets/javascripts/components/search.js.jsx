@@ -10,31 +10,10 @@ window.Search = React.createClass({
   },
 
 
-
   render: function () {
     return (
       <div>
-
-        <div className="search-inputs">
-          <label htmlFor='min_seating'>
-            Min. seating:
-            <input
-              type='integer'
-              id='min_seating'
-              onChange={this._updateFilter}
-              value={this.state.searchParams.minSeating}/>
-          </label>
-
-          <label htmlFor='max_seating'>
-            Max. seating:
-            <input
-              type='integer'
-              id='max_seating'
-              onChange={this._updateFilter}
-              value={this.state.searchParams.minSeating} />
-          </label>
-        </div>
-
+        <FilterBenches />
         <Map clickMapHandler={this.clickMapHandler}/>
         <Index />
       </div>
@@ -43,25 +22,11 @@ window.Search = React.createClass({
 
   _updateSearchParams: function () {
     this.setState({searchParams: FilterParamsStore.filterParams()});
+    this._fetchFilteredBenches();
   },
 
   _fetchFilteredBenches: function () {
-    debugger
     ApiUtil.fetchBenches(this.state.searchParams);
   },
 
-  _updateFilter: function (e) {
-    debugger
-    var val = parseInt(e.currentTarget.value);
-    switch(e.currentTarget.id) {
-      case "min_seating":
-        FilterActions.receiveFilterParams({minSeating: val});
-        break
-      case "max_seating":
-        FilterActions.receiveFilterParams({maxSeating: val});
-        break
-    }
-
-
-  }
 })

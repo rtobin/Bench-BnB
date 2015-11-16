@@ -1,3 +1,5 @@
+var Link = ReactRouter.Link;
+
 window.Index = React.createClass({
   getInitialState: function () {
     return { benches: BenchStore.all() }
@@ -13,6 +15,7 @@ window.Index = React.createClass({
   },
 
   render: function () {
+    var that = this;
     return(
       <ul className="benches-index">
         {
@@ -21,7 +24,7 @@ window.Index = React.createClass({
               <li key={bench.id}
                 onMouseEnter={ApiActions.hoverOn.bind(null, idx)}
                 onMouseLeave={ApiActions.hoverOff.bind(null, idx)}>
-                <div>{bench.description}</div>
+                <Link to={"/benches/" + bench.id}>{bench.description}</Link>
               </li>
             )
           })

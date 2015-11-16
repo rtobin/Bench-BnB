@@ -6,7 +6,7 @@ $(function () {
   var IndexRoute = ReactRouter.IndexRoute;
 
   var App = React.createClass({
-    render: function(){
+    render: function () {
       return (
           <div>
             <header><h1>Bench BnB</h1></header>
@@ -18,7 +18,8 @@ $(function () {
 
   var routes = (
       <Route path="/" component={App}>
-        <IndexRoute component={Search}/>
+        <IndexRoute component={Search} />
+        <Route path="benches/:id" component={BenchShow} />
         <Route path="benches/new" component={BenchForm} />
       </Route>
   );

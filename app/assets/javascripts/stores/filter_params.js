@@ -8,7 +8,6 @@
   };
 
   updateParams = function (opts) {
-    debugger
     var opts = opts || {};
     _filterParams.bounds = opts.bounds || _filterParams.bounds;
     _filterParams.minSeating = opts.minSeating || _filterParams.minSeating;
@@ -32,7 +31,7 @@
       switch(payload.actionType) {
         case BenchConstants.FILTER_PARAMS_RECEIVED:
           updateParams(payload.params);
-          BenchHoverStore.emit(FILTER_CHANGE_EVENT);
+          FilterParamsStore.emit(FILTER_CHANGE_EVENT);
           break;
       }
     })

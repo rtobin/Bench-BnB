@@ -12,10 +12,9 @@ class Bench < ActiveRecord::Base
     ne_lat = params["bounds"]["northEast"]["lat"]
     sw_lng = params["bounds"]["northEast"]["lng"]
     ne_lng = params["bounds"]["southWest"]["lng"]
-    min_seating = params["minSeating"] || 0;
-    max_seating = params["maxSeating"] || 100000;
-    byebug
-
+    min_seating = params["minSeating"].to_i
+    max_seating = params["maxSeating"].to_i
+    max_seating = max_seating < 1 ? 100000 : max_seating
     Bench.where(
       lat: sw_lat..ne_lat,
       lng: ne_lng..sw_lng,

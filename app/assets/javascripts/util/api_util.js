@@ -1,6 +1,5 @@
 window.ApiUtil = {
   fetchBenches: function (params) {
-    debugger
     //make an api call using AJAX in here
     $.ajax({
       url: "api/benches",
