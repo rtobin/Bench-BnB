@@ -1,7 +1,7 @@
 class Bench < ActiveRecord::Base
 
   validates :lat, :lng, :description, presence: true
-
+  validates :seating, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   def self.in_bounds(bounds)
     # bounds in the following format:
     # {

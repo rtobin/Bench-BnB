@@ -15,21 +15,43 @@ window.Map = React.createClass({
     this._markers = [];
     this._bouncingMarker = null;
     this.map.addListener("idle", this._fetchBenchesInBound);
+    this.map.addListener("click", this.clickHandler);
 
     BenchStore.addChangeListener(this._setBenchMarkers);
     BenchHoverStore.addHoverChangeListener(this._onBenchHoverChange);
   },
 
+  clickHandler: function (e) {
+    this.props.clickMapHandler(e.latLng);
+  },
+
 
   componentWillUnmount: function () {
-    BenchStore.removeChangeListener(this._onChange);
+    BenchStore.removeChangeListener(this._setBenchMarkers);
     BenchHoverStore.removeHoverChangeListener(this._onBenchHoverChange.bind(this));
   },
 
   render: function () {
+    var center;
+    debugger
+    if (this.props.location
+      && this.props.location.query.lat
+      && this.props.location.query.lng) {
+      center = {
+        lat: this.props.location.query.lat,
+        lng: this.props.location.query.lng
+      };
+      this.map.setCenter(center);
+    }
+
+
    return (
      <div className="map" ref="map" />
    );
+  },
+
+  _createBench: function () {
+
   },
 
   _fetchBenchesInBound: function () {

@@ -20,8 +20,7 @@ window.Index = React.createClass({
             return (
               <li key={bench.id}
                 onMouseEnter={ApiActions.hoverOn.bind(null, idx)}
-                onMouseLeave={ApiActions.hoverOff.bind(null, idx)}
-            >
+                onMouseLeave={ApiActions.hoverOff.bind(null, idx)}>
                 <div>{bench.description}</div>
               </li>
             )
