@@ -17,5 +17,6 @@
 //= require react_ujs
 //= require components
 //= require flux
+//= require react_router
 //= require eventemitter
 //= require_tree .

@@ -1,18 +1,23 @@
-$(function () {
-  // var Router = ReactRouter.Router;
-  // var Route = ReactRouter.Route;
-  // var IndexRoute = ReactRouter.IndexRoute;
+(function () {
+  var root = document.getElementById('content');
+  var Route = ReactRouter.Route;
+  var Router = ReactRouter.Router;
+  var IndexRoute = ReactRouter.IndexRoute;
 
-  var rootEl = document.getElementById('content');
-
-  React.render((
-
-    <Search />
-    // <Router>
-    //   <Route path="/" component={Search}>
-    //     <Route path="benches/:benchId" component={onDetail} />
-    //
-    //   </Route>
-    // </Router>
-  ), rootEl);
-});
+  var App = React.createClass({
+    render: function(){
+      return (
+          <div>
+            <header><h1>Bench BnB</h1></header>
+            {this.props.children}
+          </div>
+      );
+    }
+  });
+  var routes = (
+      <Route path="/" component={App}>
+        <IndexRoute component={Search}/>
+      </Route>
+  );
+  React.render(<Router>{routes}</Router>, root);
+})();
