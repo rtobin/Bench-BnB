@@ -1,10 +1,18 @@
 window.BenchShow = React.createClass({
-  componentDidMount() {
-    // from the path `/benches/:id`
-    var id = parseInt(this.props.params.id);
-
-    this.setState({ bench: BenchStore.findById(id) });
+  getInitialState: function () {
+    return {
+      bench: BenchStore.findById(this.props.params.id)
+    };
   },
+
+  componentDidMount: function () {
+    // from the path `/benches/:id`
+    this.benchId = this.props.params.id
+
+    // this.setState({ bench: BenchStore.findById })
+    this.bench = BenchStore.findById(id);
+  },
+
   render: function () {
     debugger
     return (
